@@ -81,7 +81,7 @@ services:
 
   otelcol:
     build:
-      context: ../telemetry
+      context: ../dist/opentelemetry-collector
       dockerfile: Dockerfile
       args:
         - TELEMETRY_BACKEND=datadog
@@ -94,9 +94,6 @@ services:
     environment:
       - DD_SITE
       - DD_API_KEY
-    command: [ "--config=/etc/otelcol-config.yml" ]
-    volumes:
-      - ../telemetry/otelcol-config.yml:/etc/otelcol-config.yml
     ports:
       - "4317"
       - "4318"

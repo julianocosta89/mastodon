@@ -15,8 +15,9 @@ RUN curl -L -o /builder https://github.com/open-telemetry/opentelemetry-collecto
 RUN chmod +x /builder
 WORKDIR /build
 
-# Copy the manifest file for the selected backend
-COPY ./${TELEMETRY_BACKEND}_manifest.yml ./manifest.yml
+# Copy the manifest and config file for the selected backend
+COPY ./manifests/${TELEMETRY_BACKEND}_manifest.yml ./manifest.yml
+COPY ./configs/${TELEMETRY_BACKEND}_config.yml ./otelcol-config.yml
 ENV GOARCH=$TARGETARCH
 ENV CGO_ENABLED=0
 RUN /builder --config ./manifest.yml --output-path /build/_build
@@ -32,5 +33,6 @@ USER ${USER_UID}
 
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build --chmod=755 /build/_build/otelcol /otelcol
-ENTRYPOINT ["/otelcol"]
+COPY --from=build /build/otelcol-config.yml /etc/otelcol-config.yml
+ENTRYPOINT ["/otelcol", "--config=/etc/otelcol-config.yml"]
 EXPOSE 4317 4318

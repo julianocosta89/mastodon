@@ -38,9 +38,8 @@ OpenTelemetry::SDK.configure do |c|
   c.use 'OpenTelemetry::Instrumentation::Sidekiq'
 
   c.service_name =  case $PROGRAM_NAME
-                    when /puma/ then 'web'
-                    when /sidekiq/ then 'sidekiq'
+                    when /puma/ then 'mastodon/web'
                     else
-                      $PROGRAM_NAME.split('/').last
+                      "mastodon/" + $PROGRAM_NAME.split('/').last
                     end
 end
