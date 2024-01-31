@@ -1,5 +1,9 @@
 // @ts-check
 
+if (process.env.OTEL_ENABLED) {
+  require('./otel-instrumentation');
+}
+
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
